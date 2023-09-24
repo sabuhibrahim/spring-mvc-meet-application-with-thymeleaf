@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+  <head>
+    <title>Register</title>
+  </head>
+  <div
+    layout:fragment="main"
+    class="d-flex align-items-center justify-content-center vh-100"
+  >
+    <div class="card p-2 shadow mb-5 bg-body-tertiary rounded text-left">
+      <div class="card-body">
+        <h1 class="h1 p-2 mb-1 text-center card-title">Register</h1>
+        <h5 class="h5 p-1 text-dark text-center mb-2">
+          Create your account now and add unlimited Groups and events free!
+        </h5>
+
+        <div th:if="${param.fail}" class="alert alert-danger">
+          Username or email already exist!
+        </div>
+
+        <form
+          role="form"
+          method="post"
+          class="mt-2"
+          th:action="@{/register}"
+          th:object="${registerForm}"
+        >
+          <div class="form-group mb-3">
+            <label for="emailInput" class="form-label">Email</label>
+            <input
+              type="text"
+              name="email"
+              th:field="*{email}"
+              th:class="${#fields.hasErrors('email')}? 'form-control is-invalid' :'form-control'"
+              id="emailInput"
+              aria-describedby="emailHelp"
+            />
+            <p
+              th:if="${#fields.hasErrors('email')}"
+              th:class="invalid-feedback"
+              th:errors="*{email}"
+              id="emailHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('email')}"
+              id="emailHelp"
+              th:class="'form-text'"
+            >
+              Email is required.
+            </p>
+          </div>
+          <div class="form-group mb-3">
+            <label for="usernameInput" class="form-label">Username</label>
+            <input
+              type="text"
+              name="username"
+              th:field="*{username}"
+              th:class="${#fields.hasErrors('username')}? 'form-control is-invalid' :'form-control'"
+              id="usernameInput"
+              aria-describedby="usernameHelp"
+            />
+            <p
+              th:if="${#fields.hasErrors('username')}"
+              th:class="invalid-feedback"
+              th:errors="*{username}"
+              id="usernameHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('username')}"
+              id="usernameHelp"
+              class="form-text"
+            >
+              Add aunique username.
+            </p>
+          </div>
+          <div class="form-group mb-3">
+            <label for="fullNameInput" class="form-label">Full Name</label>
+            <input
+              type="text"
+              name="fullName"
+              th:field="*{fullName}"
+              th:class="${#fields.hasErrors('fullName')}? 'form-control is-invalid' :'form-control'"
+              id="fullNameInput"
+              aria-describedby="fullNameHelp"
+            />
+            <p
+              th:if="${#fields.hasErrors('fullName')}"
+              th:class="invalid-feedback"
+              th:errors="*{username}"
+              id="fullNameHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('fullName')}"
+              id="fullNameHelp"
+              class="form-text"
+            >
+              Add Your full name.
+            </p>
+          </div>
+          <div class="form-group mb-3">
+            <label for="passwordInput" class="form-label">Password</label>
+            <input
+              type="password"
+              name="password"
+              th:field="*{password}"
+              th:class="${#fields.hasErrors('password')}? 'form-control is-invalid' :'form-control'"
+              id="passwordInput"
+              aria-describedby="passwordHelp"
+            />
+            <p
+              th:if="${#fields.hasErrors('password')}"
+              th:class="invalid-feedback"
+              th:errors="*{password}"
+              id="passwordHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('password')}"
+              id="passwordHelp"
+              class="form-text"
+            >
+              Set strong password.
+            </p>
+          </div>
+          <div class="form-group mb-3">
+            <label for="confirmPasswordInput" class="form-label"
+              >Confirm Password</label
+            >
+            <input
+              type="password"
+              name="confirmPassword"
+              th:field="*{confirmPassword}"
+              th:class="${#fields.hasErrors('confirmPassword')}? 'form-control is-invalid' :'form-control'"
+              id="confirmPasswordInput"
+              aria-describedby="confirmPasswordHelp"
+            />
+            <p
+              th:if="${#fields.hasErrors('confirmPassword')}"
+              th:class="invalid-feedback"
+              th:errors="*{confirmPassword}"
+              id="confirmPasswordHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('confirmPassword')}"
+              id="confirmPasswordHelp"
+              class="form-text"
+            >
+              Set strong password.
+            </p>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 mb-3">Submit</button>
+          
+          <div class="text-center mb-3">
+            <a th:href="@{/login}" class="text-center">Back to Login</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</html>

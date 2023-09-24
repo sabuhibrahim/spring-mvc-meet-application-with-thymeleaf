@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{error/layout}"
+>
+  <head>
+    <title>403 Forbidden!</title>
+  </head>
+  <div layout:fragment="main">
+    <h1 class="display-1 fw-bold">403</h1>
+        <p class="fs-3"> <span class="text-danger">Opps!</span> Forbidden.</p>
+        <p class="lead" th:text="${exc}? ${exc.getMessage()} : ''"></p>
+        <p class="lead" th:text="${url}"></p>
+        <a th:href="@{/groups}" class="btn btn-primary">Go Home</a>
+  </div>
+</html>
