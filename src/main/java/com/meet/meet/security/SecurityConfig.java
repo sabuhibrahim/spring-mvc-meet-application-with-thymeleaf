@@ -23,7 +23,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(
                 authorize -> authorize
-                            .requestMatchers("/login", "/register", "/groups", "/css/**", "/js/**")
+                            .requestMatchers("/login", "/register", "/groups", "/css/**", "/js/**", "/uploads/**")
                             .permitAll()
                             .anyRequest()
                             .authenticated()
@@ -34,7 +34,8 @@ public class SecurityConfig {
                                     .failureUrl("/login?fail=true")
                                     .permitAll()
             ).rememberMe(
-                rememberMe -> rememberMe.rememberMeParameter("remember-me").tokenValiditySeconds(100)
+                rememberMe -> rememberMe.rememberMeParameter("remember-me")
+                                        .tokenValiditySeconds(43200) // 1 day
             )
             .logout(logout -> logout.logoutRequestMatcher(
                 new AntPathRequestMatcher("/logout")

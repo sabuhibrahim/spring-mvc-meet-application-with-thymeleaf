@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.meet.meet.dtos.RegistrationDto;
 import com.meet.meet.models.UserEntity;
@@ -41,7 +42,8 @@ public class AuthController extends AbstractController {
     @PostMapping("/register")
     public String register(
         @Valid @ModelAttribute("registerForm") RegistrationDto registerForm,
-        BindingResult result
+        BindingResult result,
+        RedirectAttributes redirectAttributes
     ) {
         
         if(result.hasErrors()) {
@@ -51,18 +53,33 @@ public class AuthController extends AbstractController {
 
         UserEntity existingUser = userService.findByEmail(registerForm.getEmail());
 
+        boolean uniqueValid = true;
+
         if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()) {
-            return "redirect:/register?false";
+            uniqueValid = false;
         }
 
         existingUser = userService.findByUsername(registerForm.getUsername());
 
         if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()) {
-            return "redirect:/register?false";
+            uniqueValid = false;
+        }
+
+        if(!uniqueValid) {
+            redirectAttributes.addFlashAttribute(
+                "errorMessage", 
+                "Username or Email is already exists"
+            );
+            return "redirect:/register";
         }
 
         userService.registerUser(registerForm);
 
-        return "redirect:/groups?success=true";
+        redirectAttributes.addFlashAttribute(
+            "successMessage", 
+            "Registration completed succesfully"
+        );
+
+        return "redirect:/groups";
     }
 }

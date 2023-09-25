@@ -22,7 +22,7 @@ public class EventDto {
     private String description;
     private String photo;
 
-    private LocalDateTime starTime;
+    private LocalDateTime startTime;
     private LocalDateTime endTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

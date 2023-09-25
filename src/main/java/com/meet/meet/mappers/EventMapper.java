@@ -21,7 +21,7 @@ public class EventMapper {
                        .title(event.getTitle())
                        .description(event.getDescription())
                        .photo(event.getPhoto())
-                       .starTime(event.getStartTime())
+                       .startTime(event.getStartTime())
                        .endTime(event.getEndTime())
                        .createdAt(event.getCreatedAt())
                        .updatedAt(event.getUpdatedAt());
@@ -33,6 +33,39 @@ public class EventMapper {
                 event.getParticipaters()
                      .stream()
                      .map(user -> UserMapper.mapToUserDto(user))
+                     .collect(Collectors.toList())
+            );
+        }
+        return builder.build();
+    }
+
+
+    public static Event mapToModel(
+        EventDto event
+    ) {
+        return mapToModel(event, false, false);
+    }
+
+    public static Event mapToModel(
+        EventDto eventDto, boolean includeGroup, boolean includeParticipaters
+    ) {
+        var builder = Event.builder()
+                       .id(eventDto.getId())
+                       .title(eventDto.getTitle())
+                       .description(eventDto.getDescription())
+                       .photo(eventDto.getPhoto())
+                       .startTime(eventDto.getStartTime())
+                       .endTime(eventDto.getEndTime())
+                       .createdAt(eventDto.getCreatedAt())
+                       .updatedAt(eventDto.getUpdatedAt());
+        if(includeGroup) {
+            builder = builder.group(GroupMapper.mapToModel(eventDto.getGroup()));
+        }
+        if(includeParticipaters) {
+            builder = builder.participaters(
+                eventDto.getParticipaters()
+                     .stream()
+                     .map(user -> UserMapper.mapToUser(user))
                      .collect(Collectors.toList())
             );
         }

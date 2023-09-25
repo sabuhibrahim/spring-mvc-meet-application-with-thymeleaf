@@ -11,12 +11,19 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.meet.meet.dtos.GroupDto;
+import com.meet.meet.exceptions.ForbiddenException;
+import com.meet.meet.models.Group;
+import com.meet.meet.models.UserEntity;
 import com.meet.meet.services.GroupService;
 import com.meet.meet.services.UserService;
+import com.meet.meet.storage.StorageService;
 
 import jakarta.validation.Valid;
 
@@ -28,6 +35,11 @@ public class GroupController extends AbstractController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StorageService storageService;
+
+    private String storageBasePath = "groups";
     
     @GetMapping("/")
     public String index() {
@@ -81,12 +93,152 @@ public class GroupController extends AbstractController {
     @PostMapping("/groups/new")
     public String createGroup(
         @Valid @ModelAttribute("group") GroupDto group,
-        BindingResult result
+        @RequestParam("photoFile") MultipartFile photoFile,
+        BindingResult result,
+        RedirectAttributes redirectAttributes
     ) {
         if(result.hasErrors()){
             return "group/create";
         }
+        if(!photoFile.isEmpty()) {
+            String fileUrl = storageService.store(photoFile, storageBasePath);
+            group.setPhoto(fileUrl);
+        }
+
+        group.setOwner(getCurrentDtoUser(userService));
+
         groupService.create(group);
+        redirectAttributes.addFlashAttribute("successMessage", "New group succesfully created");
+        return "redirect:/groups";
+    }
+
+
+    @GetMapping("/groups/{id}")
+    public String getGroup(
+        @PathVariable("id") Long id,
+        Model model
+    ) {
+        UserEntity user = getCurrentUser(userService);
+        GroupDto group = groupService.findByIdJoinEvents(id);
+
+        String subscribe = null;
+
+        if(user.getId() != group.getOwner().getId()) {
+            subscribe = "Subscribe";
+            for (Group g : user.getSubscriptions()) {
+                if(g.getId() == group.getId()) {
+                    subscribe = "Unsubscribe";
+                    break;
+                }
+            }
+        }
+
+        model.addAttribute("user", user);
+        model.addAttribute("subscribe", subscribe);
+        model.addAttribute("group", group);
+        return "group/show";
+    }
+
+
+    @GetMapping("/groups/{id}/update")
+    public String updateGroupPage(
+        @PathVariable("id") Long id,
+        Model model
+    ) {
+        UserEntity user = getCurrentUser(userService);
+        GroupDto group = groupService.findById(id);
+        if(group.getOwner().getId() != user.getId()) {
+            throw new ForbiddenException("Forbidden page");
+        }
+
+        model.addAttribute("user", user);
+        model.addAttribute("group", group);
+        return "group/update";
+    }
+
+    @PostMapping("/groups/{id}/update")
+    public String updateGroup(
+        @PathVariable("id") Long id,
+        @Valid @ModelAttribute("group") GroupDto group,
+        @RequestParam("photoFile") MultipartFile photoFile,
+        BindingResult result
+    ) {
+        
+        UserEntity user = getCurrentUser(userService);
+        GroupDto groupOnUpdate = groupService.findById(id);
+
+        if(groupOnUpdate.getOwner().getId() != user.getId()) {
+            throw new ForbiddenException("Forbidden page");
+        }
+
+        if(result.hasErrors()){
+            return "group/update";
+        }
+        if(!photoFile.isEmpty()) {
+            String fileUrl = storageService.store(photoFile, storageBasePath);
+            groupOnUpdate.setPhoto(fileUrl);
+        }
+
+        groupOnUpdate.setTitle(group.getTitle());
+        groupOnUpdate.setDescription(group.getDescription());
+
+        groupService.update(groupOnUpdate);
+
+        return "redirect:/groups/" + id;
+    }
+
+
+    @GetMapping("/groups/{id}/subscribe")
+    public String subscribe(
+        @PathVariable("id") Long id,
+        RedirectAttributes redirectAttributes
+    ) {
+        UserEntity user = getCurrentUser(userService);
+        Group group = groupService.findByIdModel(id);
+        if(group.getOwner().getId() == user.getId()) {
+            throw new ForbiddenException("Forbidden page");
+        }
+        List<Group> subscriptions = user.getSubscriptions();
+        
+        boolean unsubscripe = false;
+        
+        for (Group g : subscriptions) {
+            if(g.getId() == group.getId()) {
+                unsubscripe = true;
+                break;
+            }
+        }
+        if(!unsubscripe) {
+            userService.subscribe(user, group);
+            redirectAttributes.addFlashAttribute(
+                "successMessage", 
+                "Successfully subscribe group"
+            );
+        } else {
+            userService.unsubscribe(user, group);
+            redirectAttributes.addFlashAttribute(
+                "successMessage", 
+                "Successfully unsubscribe group"
+            );
+        }
+        return "redirect:/groups/" + id + "?succesMessage=";
+    }
+
+
+    @GetMapping("/groups/{id}/delete")
+    public String delete(
+        @PathVariable("id") Long id,
+        RedirectAttributes redirectAttributes
+    ) {
+        UserEntity user = getCurrentUser(userService);
+        System.out.println(user.toString());
+        GroupDto group = groupService.findById(id);
+        if(group.getOwner().getId() != user.getId()) {
+            throw new ForbiddenException("Forbidden page");
+        }
+        groupService.delete(group);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Group succesfully deleted");
         return "redirect:/groups";
     }
 }

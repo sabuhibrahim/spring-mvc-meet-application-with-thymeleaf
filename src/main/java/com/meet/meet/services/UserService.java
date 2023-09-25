@@ -2,6 +2,7 @@ package com.meet.meet.services;
 
 import com.meet.meet.dtos.RegistrationDto;
 import com.meet.meet.dtos.UserDto;
+import com.meet.meet.models.Group;
 import com.meet.meet.models.UserEntity;
 
 public interface UserService {
@@ -10,4 +11,8 @@ public interface UserService {
     UserEntity findByEmail(String email);
 
     UserEntity findByUsername(String username);
+
+    void subscribe(UserEntity user, Group group);
+
+    void unsubscribe(UserEntity user, Group group);
 }

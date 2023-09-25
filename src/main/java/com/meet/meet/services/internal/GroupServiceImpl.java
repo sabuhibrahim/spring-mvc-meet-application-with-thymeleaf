@@ -14,6 +14,7 @@ import com.meet.meet.dtos.GroupDto;
 import com.meet.meet.exceptions.NotFoundException;
 import com.meet.meet.mappers.GroupMapper;
 import com.meet.meet.models.Group;
+import com.meet.meet.models.UserEntity;
 import com.meet.meet.repositories.GroupRepository;
 import com.meet.meet.services.GroupService;
 
@@ -42,8 +43,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public GroupDto create(GroupDto group) {
-        return group;
+    public GroupDto create(GroupDto groupDto) {
+        Group group = GroupMapper.mapToModel(groupDto, true, false, false);
+
+        group = groupRepository.save(group);
+        return GroupMapper.mapToDto(group, true, false, false);
     }
 
     @Override
@@ -60,24 +64,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void update(GroupDto groupDto) throws NotFoundException {
-        Group group;
-        try {
-            group = groupRepository.findById(groupDto.getId()).get();
-        } catch (NoSuchElementException ex) {
-            logger.debug("Group not found! Id: " + groupDto.getId());
-            throw new NotFoundException("Group not found!");
-        }
-
-        group.setTitle(groupDto.getTitle());
-        group.setDescription(groupDto.getDescription());
-        group.setPhoto(groupDto.getPhoto());
-
-        groupRepository.save(group);
-    }
-
-    @Override
-    public void delete(long id) throws NotFoundException {
+    public Group findByIdModel(long id) throws NotFoundException {
         Group group;
         try {
             group = groupRepository.findById(id).get();
@@ -86,7 +73,44 @@ public class GroupServiceImpl implements GroupService {
             throw new NotFoundException("Group not found!");
         }
 
-        groupRepository.delete(group);
+        return group;
+    }
+
+    @Override
+    public GroupDto findByIdJoinEvents(long id) throws NotFoundException {
+        Group group;
+        try {
+            group = groupRepository.findByIdJoinEvents(id).get();
+        } catch (NoSuchElementException ex) {
+            logger.debug("Group not found! Id: " + id);
+            throw new NotFoundException("Group not found!");
+        }
+
+        return GroupMapper.mapToDto(group, true, false, true);
+    }
+
+    @Override
+    public GroupDto findByIdJoinSubscribers(long id) throws NotFoundException {
+        Group group;
+        try {
+            group = groupRepository.findByIdJoinSubscribers(id).get();
+        } catch (NoSuchElementException ex) {
+            logger.debug("Group not found! Id: " + id);
+            throw new NotFoundException("Group not found!");
+        }
+
+        return GroupMapper.mapToDto(group, true, true, false);
+    }
+
+    @Override
+    public void update(GroupDto groupDto) throws NotFoundException {
+        Group group = GroupMapper.mapToModel(groupDto, true, false, false);
+        groupRepository.save(group);
+    }
+
+    @Override
+    public void delete(GroupDto group) throws NotFoundException {
+        groupRepository.delete(GroupMapper.mapToModel(group, true, false, false));
     }
 
 }

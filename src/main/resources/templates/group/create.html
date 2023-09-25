@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+  <head>
+    <title>New Group</title>
+  </head>
+  <div
+    layout:fragment="main"
+    class="d-flex align-items-center justify-content-center vh-100"
+  >
+    <div class="card p-2 shadow mb-5 bg-body-tertiary rounded text-left w-50">
+      <div class="card-body">
+        <div
+          th:if="${successMessage}"
+          class="alert alert-success"
+          th:text="${successMessage}"
+        ></div>
+        <div
+          th:if="${errorMessage}"
+          class="alert alert-danger"
+          th:text="${errorMessage}"
+        ></div>
+        <h1 class="h1 p-2 mb-1 card-title text-center">New Group</h1>
+        <h5 class="h5 p-1 text-dark text-center">
+          Add new group for new events.
+        </h5>
+
+        <form
+          role="form"
+          method="post"
+          th:action="@{/groups/new}"
+          th:object="${group}"
+          enctype="multipart/form-data"
+        >
+          <div class="form-group mb-3">
+            <label for="titleInput" class="form-label">Title</label>
+            <input
+              type="text"
+              th:field="*{title}"
+              th:class="${#fields.hasErrors('title')}? 'form-control is-invalid' :'form-control'"
+              id="titleInput"
+              aria-describedby="titleHelp"
+              placeholder="Enter Title"
+            />
+            <p
+              th:if="${#fields.hasErrors('title')}"
+              th:class="invalid-feedback"
+              th:errors="*{title}"
+              id="titleHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('title')}"
+              id="titleHelp"
+              th:class="'form-text'"
+            >
+              This is a title for group.
+            </p>
+          </div>
+          <div class="form-group mb-3">
+            <label for="descriptionInput" class="form-label">Description</label>
+            <textarea
+              th:field="*{description}"
+              th:class="${#fields.hasErrors('description')}? 'form-control is-invalid' :'form-control'"
+              id="descriptionInput"
+              aria-describedby="descriptionHelp"
+              placeholder="Enter Description"
+            ></textarea>
+            <p
+              th:if="${#fields.hasErrors('description')}"
+              th:class="invalid-feedback"
+              th:errors="*{description}"
+              id="descriptionHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('description')}"
+              id="descriptionHelp"
+              th:class="'form-text'"
+            >
+              This is a description for group.
+            </p>
+          </div>
+          <div class="mb-3 form-group">
+            <label for="formFile" class="form-label">Photo</label>
+            <input
+              class="form-control"
+              type="file"
+              id="formFile"
+              name="photoFile"
+              aria-describedby="photoFileHelp"
+              accept=".png, .jpg"
+            />
+            <p id="photoFileHelp" class="form-text">
+              Max 5MB file size allowed.
+            </p>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 mb-3">
+            Create
+          </button>
+        </form>
+      </div>
+    </div>
+    <!-- </div> -->
+  </div>
+</html>
