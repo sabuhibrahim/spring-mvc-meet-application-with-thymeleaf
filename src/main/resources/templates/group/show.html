@@ -61,14 +61,14 @@
           >
             Edit <i class="bi bi-pencil-square"></i>
           </a>
-          <a href="#" class="btn btn-success">Events</a>
+          <a th:href="@{/events(groupId=${group.id})}" class="btn btn-success">Events</a>
           <a
             th:if="*{owner} and ${user.id} == *{owner.id}"
             type="submit"
             th:href="@{/groups/{id}/delete(id=${group.id})}"
             class="btn btn-danger"
           >
-            Remove Club
+            Remove Group
           </a>
           <a
             th:if="${subscribe}"
@@ -80,7 +80,7 @@
           <hr />
           <div class="text-center">
             <h3 class="h1 p-2 mb-1">
-              <a href="#">Events</a>
+              <a th:href="@{/events(groupId=${group.id})}">Events</a>
             </h3>
           </div>
           <div class="mt-2 p-2 r-5 row">

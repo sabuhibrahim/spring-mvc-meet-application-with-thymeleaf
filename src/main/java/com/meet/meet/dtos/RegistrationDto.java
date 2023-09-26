@@ -27,7 +27,7 @@ public class RegistrationDto {
     private String fullName;
 
     @NotEmpty
-    // @ValidPassword
+    @ValidPassword
     private String password;
 
     @NotEmpty

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+  xmlns:sec="http://www.thymeleaf.org"
+>
+  <head>
+    <title>Events Page</title>
+  </head>
+  <div layout:fragment="main">
+    <div
+      class="p-2 mt-5 mb-4 text-center align-items-center justify-content-center"
+    >
+      <div
+        th:if="${successMessage}"
+        class="alert alert-success"
+        th:text="${successMessage}"
+      ></div>
+      <div
+        th:if="${errorMessage}"
+        class="alert alert-danger"
+        th:text="${errorMessage}"
+      ></div>
+      <h1 class="h1 p-2 mb-1">Events Page</h1>
+      <h5 class="h5 p-1">
+        This is events page. You can see here a lot of information about each
+        event.
+      </h5>
+
+      <a
+        th:if="${group} and ${user.id} == ${group.owner.id}"
+        type="button"
+        class="btn btn-primary"
+        th:href="@{/events/new(groupId=${group.id})}"
+      >
+        Add New Event
+      </a>
+    </div>
+    <div class="p-2 r-5 row">
+      <div
+        th:each="event: ${events.content}"
+        class="col-lg-3 col-md-4 col-sm-6 col-12 pt-2 pb-2"
+      >
+        <div
+          class="card mb-3 bg-body-tertiary rounded shadow"
+          style="width: 18rem;"
+        >
+          <img
+            th:src="@{/uploads/} + ${event.photo}"
+            class="card-img-top"
+            alt="..."
+          />
+          <div class="card-body">
+            <h5 th:text="${event.title}" class="card-title"></h5>
+            <p th:text="${event.description}" class="card-text"></p>
+            <p class="card-text">
+              <b>Start Date: </b>
+              <small
+                th:text="${#temporals.format(event.startTime, 'dd-MM-yyyy HH:mm')}"
+                class="text-body-secondary"
+              ></small>
+            </p>
+            <p class="card-text">
+              <b>End Date: </b>
+              <small
+                th:text="${#temporals.format(event.endTime, 'dd-MM-yyyy HH:mm')}"
+                class="text-body-secondary"
+              ></small>
+            </p>
+            <p class="card-text">
+              <b>Created Date: </b>
+              <small
+                th:text="${#temporals.format(event.createdAt, 'dd-MM-yyyy HH:mm')}"
+                class="text-body-secondary"
+              ></small>
+            </p>
+            <p class="card-text">
+              <b>Last Update: </b>
+              <small
+                th:text="${#temporals.format(event.updatedAt, 'dd-MM-yyyy HH:mm')}"
+                class="text-body-secondary"
+              ></small>
+            </p>
+            <a
+              th:href="@{/events/{id}(id=${event.id}, groupId=${param.groupId})}"
+              class="btn btn-primary"
+              >More info</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <nav
+      th:if="${events.getTotalPages() > 0}"
+      aria-label="Page navigation"
+      class=""
+    >
+      <ul class="pagination justify-content-center">
+        <li class="page-item">
+          <a
+            th:class="${events.isFirst()}? 'page-link disabled' : 'page-link'"
+            th:href="@{/events(groupId=${param.groupId}, pageSize=${param.pageSize}, pageNo=${prevPageNumber}, query=${param.query})}"
+            aria-label="Previous"
+          >
+            <span>&laquo;</span>
+          </a>
+        </li>
+        <li
+          th:each="pageNumber : ${pageNumbers}"
+          th:class="${pageNumber.equals(pageNumber.getClass().parseInt(param.pageNo != null ? param.pageNo : 1))} ? 'active page-item' : 'page-item'"
+        >
+          <a
+            class="page-link"
+            th:href="@{/events(groupId=${param.groupId}, pageSize=${param.pageSize}, pageNo=${pageNumber}, query=${param.query})}"
+            th:text="${pageNumber}"
+          >
+          </a>
+        </li>
+        <li class="page-item">
+          <a
+            th:class="${events.isLast()}? 'page-link disabled' : 'page-link'"
+            th:href="@{/events(groupId=${param.groupId}, pageSize=${param.pageSize}, pageNo=${nextPageNumber}, query=${param.query})}"
+            aria-label="Next"
+          >
+            <span>&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</html>

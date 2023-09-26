@@ -14,7 +14,6 @@ import com.meet.meet.dtos.GroupDto;
 import com.meet.meet.exceptions.NotFoundException;
 import com.meet.meet.mappers.GroupMapper;
 import com.meet.meet.models.Group;
-import com.meet.meet.models.UserEntity;
 import com.meet.meet.repositories.GroupRepository;
 import com.meet.meet.services.GroupService;
 

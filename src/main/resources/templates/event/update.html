@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+>
+  <head>
+    <title th:text="${event.title}"></title>
+  </head>
+  <div
+    layout:fragment="main"
+    class="d-flex align-items-center justify-content-center vh-100"
+    th:object="${event}"
+  >
+    <div class="card p-2 shadow mb-5 bg-body-tertiary rounded text-left w-50">
+      <div class="card-body">
+        <div
+          th:if="${successMessage}"
+          class="alert alert-success"
+          th:text="${successMessage}"
+        ></div>
+        <div
+          th:if="${errorMessage}"
+          class="alert alert-danger"
+          th:text="${errorMessage}"
+        ></div>
+        <h1 class="h1 p-2 mb-1 card-title text-center" th:text="*{title}"></h1>
+        <h5 class="h5 p-1 text-dark text-center" th:text="*{description}"></h5>
+
+        <form
+          role="form"
+          method="post"
+          th:action="@{/events/{id}/update(id=${event.id}, groupId=${param.groupId})}"
+          enctype="multipart/form-data"
+        >
+          <div class="form-group mb-3">
+            <label for="titleInput" class="form-label">Title</label>
+            <input
+              type="text"
+              th:field="*{title}"
+              th:class="${#fields.hasErrors('title')}? 'form-control is-invalid' :'form-control'"
+              id="titleInput"
+              aria-describedby="titleHelp"
+              placeholder="Enter Title"
+            />
+            <p
+              th:if="${#fields.hasErrors('title')}"
+              th:class="invalid-feedback"
+              th:errors="*{title}"
+              id="titleHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('title')}"
+              id="titleHelp"
+              th:class="'form-text'"
+            >
+              This is a title for event.
+            </p>
+          </div>
+          <div class="form-group mb-3">
+            <label for="descriptionInput" class="form-label">Description</label>
+            <textarea
+              th:field="*{description}"
+              th:class="${#fields.hasErrors('description')}? 'form-control is-invalid' :'form-control'"
+              id="descriptionInput"
+              aria-describedby="descriptionHelp"
+              placeholder="Enter Description"
+            ></textarea>
+            <p
+              th:if="${#fields.hasErrors('description')}"
+              th:class="invalid-feedback"
+              th:errors="*{description}"
+              id="descriptionHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('description')}"
+              id="descriptionHelp"
+              th:class="'form-text'"
+            >
+              This is a description for event.
+            </p>
+          </div>
+          <div class="mb-3 form-group">
+            <label for="formFile" class="form-label"
+              >Photo
+              <a
+                th:if="*{photo}"
+                th:href="@{/uploads/} + *{photo}"
+                target="_blank"
+                >Old Photo</a
+              ></label
+            >
+            <input
+              class="form-control"
+              type="file"
+              id="formFile"
+              name="photoFile"
+              aria-describedby="photoFileHelp"
+              accept=".png, .jpg"
+            />
+            <p id="photoFileHelp" class="form-text">
+              Max 5MB file size allowed.
+            </p>
+          </div>
+
+          <div class="mb-3 form-group">
+            <label for="startTimeInput" class="form-label">Start Time</label>
+            <input
+              type="datetime-local"
+              name="startTime"
+              th:field="*{startTime}"
+              th:class="${#fields.hasErrors('startTime')}? 'form-control is-invalid': 'form-control'"
+              id="startTimeInput"
+              aria-describedby="startTimeHelp"
+            />
+            <p
+              th:if="${#fields.hasErrors('startTime')}"
+              class="invalid-feedback"
+              th:errors="*{startTime}"
+              id="startTimeHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('startTime')}"
+              id="startTimeHelp"
+              class="form-text"
+            >
+              This is the start time of event.
+            </p>
+          </div>
+
+          <div class="mb-3 form-group">
+            <label for="endTimeInput" class="form-label">End Time</label>
+            <input
+              type="datetime-local"
+              name="endTime"
+              th:field="*{endTime}"
+              th:class="${#fields.hasErrors('endTime')}? 'form-control is-invalid': 'form-control'"
+              id="endTimeInput"
+              aria-describedby="endTimeHelp"
+            />
+            <p
+              th:if="${#fields.hasErrors('endTime')}"
+              class="invalid-feedback"
+              th:errors="*{endTime}"
+              id="endTimeHelp"
+            ></p>
+            <p
+              th:unless="${#fields.hasErrors('endTime')}"
+              id="endTimeHelp"
+              class="form-text"
+            >
+              This is the end time of event.
+            </p>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 mb-3">
+            Update
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</html>

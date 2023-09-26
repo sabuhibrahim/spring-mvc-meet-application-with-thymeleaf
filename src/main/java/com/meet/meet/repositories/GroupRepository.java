@@ -11,7 +11,10 @@ import org.springframework.data.jpa.repository.Query;
 import com.meet.meet.models.Group;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    @Query("SELECT g FROM Group g JOIN g.owner WHERE g.title ILIKE CONCAT('%', :query, '%') OR g.description ILIKE CONCAT('%', :query, '%')")
+    @Query(
+        "SELECT g FROM Group g JOIN g.owner WHERE g.title ILIKE CONCAT('%', :query, '%')"
+        + " OR g.description ILIKE CONCAT('%', :query, '%')"
+    )
     Page<Group> search(String query, Pageable pageable);
 
     @Query("SELECT g FROM Group g JOIN g.owner")

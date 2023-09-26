@@ -161,6 +161,7 @@ public class GroupController extends AbstractController {
         @PathVariable("id") Long id,
         @Valid @ModelAttribute("group") GroupDto group,
         @RequestParam("photoFile") MultipartFile photoFile,
+        RedirectAttributes redirectAttributes,
         BindingResult result
     ) {
         
@@ -183,6 +184,11 @@ public class GroupController extends AbstractController {
         groupOnUpdate.setDescription(group.getDescription());
 
         groupService.update(groupOnUpdate);
+
+        redirectAttributes.addFlashAttribute(
+            "successMessage", 
+            "Group succesfully updated"
+        );
 
         return "redirect:/groups/" + id;
     }

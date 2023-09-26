@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout}"
+  xmlns:sec="http://www.thymeleaf.org"
+>
+  <head>
+    <title th:text="${event.title}"></title>
+  </head>
+  <div layout:fragment="main" th:object="${event}">
+    <div
+      class="p-2 mt-5 mb-4 text-center align-items-center justify-content-center"
+    >
+      <div
+        th:if="${successMessage}"
+        class="alert alert-success"
+        th:text="${successMessage}"
+      ></div>
+      <div
+        th:if="${errorMessage}"
+        class="alert alert-danger"
+        th:text="${errorMessage}"
+      ></div>
+      <h1 class="h1 p-2 mb-1" th:text="*{title}"></h1>
+      <h5 class="h5 p-1" th:text="*{description}"></h5>
+    </div>
+    <div class="p-2 r-5 align-items-center justify-content-center">
+      <!-- Club Detail Start -->
+      <div class="card p-5 mb-3 bg-body-tertiary rounded shadow">
+        <img th:src="@{/uploads/} + *{photo}" class="card-img-top" alt="..." />
+        <div class="card-body">
+          <h2 class="card-title text-center mt-5 mb-5" th:text="*{title}"></h2>
+          <p class="card-text text-center mb-5" th:text="*{description}"></p>
+          <div class="row mb-5">
+            <div class="col-sm-6">
+              <p class="card-text">
+                <b>Start Date: </b
+                ><small
+                  class="text-body-secondary"
+                  th:text="*{#temporals.format(startTime, 'dd-MM-yyyy HH:mm')}"
+                ></small>
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="card-text">
+                <b>End Date: </b
+                ><small
+                  class="text-body-secondary"
+                  th:text="*{#temporals.format(endTime, 'dd-MM-yyyy HH:mm')}"
+                ></small>
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="card-text">
+                <b>Last Update Date: </b
+                ><small
+                  class="text-body-secondary"
+                  th:text="*{#temporals.format(updatedAt, 'dd-MM-yyyy HH:mm')}"
+                ></small>
+              </p>
+            </div>
+            <div class="col-sm-6">
+              <p class="card-text">
+                <b>Created Date: </b
+                ><small
+                  class="text-body-secondary"
+                  th:text="*{#temporals.format(createdAt, 'dd-MM-yyyy HH:mm')}"
+                ></small>
+              </p>
+            </div>
+          </div>
+
+          <a
+            th:if="*{group} and *{group.owner} and ${user.id} == *{group.owner.id}"
+            type="button"
+            class="btn btn-primary"
+            th:href="@{/events/{id}/update(id=${event.id}, groupId=${event.group.id})}"
+          >
+            Edit <i class="bi bi-pencil-square"></i>
+          </a>
+          <a
+            th:if="*{group} and *{group.owner} and ${user.id} == *{group.owner.id}"
+            type="submit"
+            th:href="@{/events/{id}/delete(id=${event.id}, groupId=${event.group.id})}"
+            class="btn btn-danger"
+          >
+            Remove Event
+          </a>
+          <a
+            th:if="${participate}"
+            type="submit"
+            th:href="@{/events/{id}/participate(id=${event.id}, groupId=${event.group.id})}"
+            class="btn btn-warning text-white"
+            th:text="${participate}"
+          ></a>
+          <hr />
+        </div>
+      </div>
+    </div>
+  </div>
+</html>

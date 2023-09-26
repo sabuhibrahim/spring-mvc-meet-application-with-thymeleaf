@@ -41,7 +41,7 @@
       class="navbar navbar-expand-lg bg-body-tertiary justify-content-between"
     >
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Home</a>
+        <a class="navbar-brand" th:href="@{/}">Home</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -64,15 +64,15 @@
               <a class="nav-link" th:href="@{/groups/new}">New Group</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Events</a>
+              <a class="nav-link" th:href="@{/events}">Events</a>
             </li>
           </ul>
-          <form class="d-flex" role="search" method="get" action="#">
+          <form class="d-flex" role="search" method="get" th:action="@{/groups}">
             <input
               class="form-control me-2"
               type="search"
-              name="query"
-              th:value="${param.query}"
+              name="q"
+              th:value="${param.q}"
               placeholder="Search"
               aria-label="Search"
             />
@@ -98,6 +98,10 @@
               <i class="bi bi-person-circle"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
+              <li sec:authorize="isAuthenticated()">
+                <h5 sec:authentication="name" class="p-2 mb-1 text-center"></h5>
+              </li>
+              <li sec:authorize="isAuthenticated()"><hr class="dropdown-divider" /></li>
               <li sec:authorize="!isAuthenticated()">
                 <a class="dropdown-item" th:href="@{/login}">Login</a>
               </li>

@@ -12,6 +12,7 @@ import com.meet.meet.dtos.RegistrationDto;
 import com.meet.meet.dtos.UserDto;
 import com.meet.meet.mappers.GroupMapper;
 import com.meet.meet.mappers.UserMapper;
+import com.meet.meet.models.Event;
 import com.meet.meet.models.Group;
 import com.meet.meet.models.Role;
 import com.meet.meet.models.UserEntity;
@@ -71,6 +72,22 @@ public class UserServiceImpl implements UserService {
         List<Group> groups = user.getSubscriptions();
         groups.removeIf(g -> g.getId() == group.getId());
         user.setSubscriptions(groups);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void participate(UserEntity user, Event event) {
+        List<Event> events = user.getParticipations();
+        events.add(event);
+        user.setParticipations(events);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void unparticipate(UserEntity user, Event event) {
+        List<Event> events = user.getParticipations();
+        events.removeIf(e -> e.getId() == event.getId());
+        user.setParticipations(events);
         userRepository.save(user);
     }
     
