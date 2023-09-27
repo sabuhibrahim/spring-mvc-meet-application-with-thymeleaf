@@ -20,7 +20,6 @@ docker compose up -d --build
 ```bash
 docker logs backend -f 
 ```
-- Go to [http://127.0.0.1:8080](http://127.0.0.1:8080) on your browser
 
 ### Without docker
 - First you need Postgresql database
@@ -31,3 +30,6 @@ docker logs backend -f
 mvn install
 java -jar target/spring-meet-app.jar
 ```
+
+### If it is ready
+- Go to [http://127.0.0.1:8080](http://127.0.0.1:8080) on your browser
