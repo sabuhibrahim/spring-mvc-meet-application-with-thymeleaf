@@ -8,7 +8,7 @@ Also simple dockerizing example.
 ### With docker
 - First [install docker](https://docs.docker.com/engine/install/)
 - (Optional) Change Postgresql auth properties on docker-compose.yml and application.properties.docker
-- Run docker-compose to buil docker containers
+- Run docker-compose to build docker containers
 ```bash
 docker-compose up -d --build
 ```
