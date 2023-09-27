@@ -24,6 +24,17 @@ docker logs backend -f
 ### Without docker
 - First you need Postgresql database
 - Add your postgresql auth properties to src/main/recources/application.properties
+- If you don't use docker comment spring-boot-docker-compose dependency in pom.xml file
+```xml
+...
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-docker-compose</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+</dependency>
+...
+```
 - Use your IDE to run application or use maven build and run
 
 ```bash
