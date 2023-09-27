@@ -1,0 +1,45 @@
+version: '3'
+services:
+  postgres:
+    container_name: postgres
+    image: 'postgres:latest'
+    environment:
+      - 'PGPASSWORD=root'
+      - 'POSTGRES_DB=meetdb'
+      - 'POSTGRES_PASSWORD=meetpass'
+      - 'POSTGRES_USER=meetuser'
+    ports:
+      - '5432:5432'
+    restart: always
+    volumes:
+      - './pgsql:/var/lib/postgresql/data'
+    networks:
+      - spring-mvc
+    
+  backend:
+    container_name: backend
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - './uploads:/code/uploads'
+    depends_on:
+      - postgres
+    links:
+      - postgres
+    networks:
+      - spring-mvc
+
+
+networks:
+  spring-mvc:
+    driver: bridge
+
+volumes:
+  pgsql:
+    driver: local
+  uploads:
+    driver: local

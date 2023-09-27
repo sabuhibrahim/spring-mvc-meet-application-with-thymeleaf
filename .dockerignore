@@ -1,0 +1,7 @@
+target/
+pgsql/
+.mvn/
+.gitignore
+.vscode/
+.git/
+README.md
